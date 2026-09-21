@@ -1,0 +1,158 @@
+:root {
+    --bg-color: #111111;
+    --text-color: #f0f0f0;
+    --primary-yellow: #F4D03F;
+    --accent-yellow: #F1C40F;
+    --petal-color: #FFD700;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+}
+
+h1 { font-size: 2rem; margin-bottom: 1rem; }
+h2 { font-size: 1.5rem; color: var(--primary-yellow); margin-bottom: 1rem;}
+p { font-size: 1.1rem; line-height: 1.6; font-weight: 300; }
+
+.screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-in-out;
+    padding: 20px;
+    text-align: center;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hidden-text { opacity: 0; transform: translateY(20px); transition: all 1.5s ease; }
+.show-text { opacity: 1; transform: translateY(0); }
+
+/* Buttons */
+.btn {
+    background: transparent;
+    border: 1px solid var(--primary-yellow);
+    color: var(--primary-yellow);
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-family: 'Lato', sans-serif;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+}
+.btn:hover { background: var(--primary-yellow); color: var(--bg-color); }
+
+.music-btn {
+    position: fixed; top: 20px; right: 20px;
+    background: rgba(255,255,255,0.1); border: none;
+    font-size: 1.5rem; border-radius: 50%;
+    width: 45px; height: 45px;
+    cursor: pointer; z-index: 1000;
+    transition: background 0.3s;
+}
+.music-btn.playing { background: rgba(244, 208, 63, 0.3); }
+
+/* Game Screen */
+.flower-container {
+    position: relative; width: 200px; height: 300px;
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 50px;
+}
+.flower-center {
+    width: 50px; height: 50px;
+    background: #5C4033;
+    border-radius: 50%;
+    z-index: 10;
+    box-shadow: inset 0 0 10px #3e2723;
+}
+.stem {
+    position: absolute; top: 50%; width: 6px; height: 150px;
+    background: #2E7D32; border-radius: 3px; z-index: 1;
+}
+.drop-zone {
+    position: absolute; width: 40px; height: 80px;
+    z-index: 5;
+    /* border: 1px dashed rgba(244, 208, 63, 0.3);  <-- Quita el comentario si quieres ver las zonas al probar */
+}
+
+.petals-container {
+    position: absolute; bottom: 10%; width: 100%; height: 150px;
+    display: flex; justify-content: space-around; flex-wrap: wrap;
+    padding: 0 20px;
+}
+
+.petal {
+    width: 40px; height: 80px;
+    background: radial-gradient(ellipse at bottom, var(--petal-color) 0%, var(--accent-yellow) 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute; cursor: grab; z-index: 20;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    touch-action: none; /* Crucial para mobile drag */
+    transition: transform 0.2s;
+}
+.petal.dragging { cursor: grabbing; z-index: 100; transform: scale(1.1); transition: none; }
+.petal.placed { cursor: default; box-shadow: none; }
+
+.floating-phrase {
+    position: absolute; top: 15%;
+    font-family: 'Playfair Display', serif;
+    font-style: italic; color: var(--primary-yellow);
+    font-size: 1.3rem; opacity: 0; transition: opacity 0.5s;
+}
+
+/* Story Screen */
+.story-container {
+    max-width: 600px; width: 90%;
+}
+.story-card {
+    min-height: 150px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-family: 'Playfair Display', serif;
+    opacity: 0; transform: translateY(20px); transition: all 1s ease;
+}
+.story-card.visible { opacity: 1; transform: translateY(0); }
+
+/* Outro Screen */
+.field-container {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none;
+}
+.outro-text-container {
+    position: relative; z-index: 10;
+    background: rgba(17,17,17,0.7);
+    padding: 40px; border-radius: 20px;
+}
+.highlight { font-size: 2.5rem; margin-top: 20px; text-shadow: 0 0 20px rgba(244,208,63,0.4); }
+
+.mini-flower {
+    position: absolute;
+    width: 30px; height: 30px;
+    opacity: 0; transform: scale(0);
+    transition: all 2s ease-out;
+}
+.mini-flower.bloom { opacity: 1; transform: scale(1); }
