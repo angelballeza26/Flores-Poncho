@@ -8,11 +8,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <a class="music-btn" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener" aria-label="Abrir la canción en Spotify"><span>♪</span><small>Escuchar</small></a>
-  <div class="ambient" aria-hidden="true"></div>
+  <div class="ambient" id="ambient" aria-hidden="true"></div>
   <main>
     <section class="screen active" id="screen-intro">
       <div class="eyebrow">un detalle hecho para ti</div>
@@ -20,7 +20,10 @@
         <h1>Te preparé algo<br><em>bonito y amarillo.</em></h1>
         <p>No pude entregártelo en persona, así que hice una versión que puedes armar tú.</p>
         <p class="soft">Y mientras la armas, puedes escuchar nuestra canción.</p>
-        <div class="intro-actions"><button class="btn" id="btn-start">Comenzar <span>→</span></button><a class="song-link" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">Abrir en Spotify ↗</a></div>
+        <div class="intro-actions">
+          <button type="button" class="btn" id="btn-start">Comenzar <span>→</span></button>
+          <a class="song-link" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">Abrir en Spotify ↗</a>
+        </div>
       </div>
       <div class="intro-sun" aria-hidden="true"></div>
     </section>
@@ -37,11 +40,11 @@
 
     <section class="screen" id="screen-completed">
       <div class="completed-flower flower-art"><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-      <div class="eyebrow">quedó completa</div><h2>Una flor para ti,<br><em>con todo mi cariño.</em></h2><p>Ahora sí: amarilla, completa y hecha especialmente para Poncho.</p><button class="btn" id="btn-story">Hay algo más <span>→</span></button>
+      <div class="eyebrow">quedó completa</div><h2>Una flor para ti,<br><em>con todo mi cariño.</em></h2><p>Ahora sí: amarilla, completa y hecha especialmente para Poncho.</p><button type="button" class="btn" id="btn-story">Hay algo más <span>→</span></button>
     </section>
 
     <section class="screen" id="screen-story">
-      <div class="story-progress" id="story-progress"></div><div class="eyebrow">unas palabras para ti</div><div class="story-card" id="story-card"><span class="story-number" id="story-number">01</span><p id="story-text"></p></div><button class="btn ghost-btn" id="btn-next-story">Siguiente <span>→</span></button>
+      <div class="story-progress" id="story-progress"></div><div class="eyebrow">unas palabras para ti</div><div class="story-card" id="story-card"><span class="story-number" id="story-number">01</span><p id="story-text"></p></div><button type="button" class="btn ghost-btn" id="btn-next-story">Siguiente <span>→</span></button>
     </section>
 
     <section class="screen outro" id="screen-outro">
@@ -52,6 +55,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js"></script>
+  <script src="script.js?v=4" defer></script>
 </body>
 </html>
