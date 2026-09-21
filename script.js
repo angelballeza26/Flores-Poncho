@@ -3,14 +3,14 @@
 
   const CONFIG = {
     petalPhrases: [
-      'Un pétalo para iluminar tu día.',
-      'Porque contigo todo se siente más bonito.',
-      'Este detalle lleva un poquito de mi cariño.',
-      'Me encanta compartir momentos contigo.',
-      'Te mereces flores y cosas bonitas siempre.',
-      'Gracias por hacerme sonreír.',
-      'Eres alguien muy especial para mí.',
-      'La flor está completa, pero el cariño sigue creciendo.'
+      'Me gusta cómo poco a poco te has vuelto alguien especial para mí.',
+      'Contigo hasta las cosas más simples terminan teniendo algo bonito.',
+      'Me gusta la tranquilidad que siento cuando estoy contigo.',
+      'Gracias por esos momentos que probablemente tú ni sabes cuánto significan para mí.',
+      'Me gusta seguir descubriendo quién eres.',
+      'De todas las cosas que pudieron pasar, me gusta que nos hayamos encontrado.',
+      'Contigo me dan ganas de ver qué sigue.',
+      'Esta flor no se compara con una de verdad, pero la hice pensando en ti.'
     ],
     storyTimeline: [
       'Quería regalarte flores, pero también quería que este detalle tuviera algo de ti.',
@@ -23,12 +23,15 @@
 
   const $ = selector => document.querySelector(selector);
   const screens = {
-    intro: $('#screen-intro'),
-    game: $('#screen-game'),
-    completed: $('#screen-completed'),
-    story: $('#screen-story'),
-    outro: $('#screen-outro')
+    intro: $('#screen-intro'), game: $('#screen-game'), completed: $('#screen-completed'),
+    story: $('#screen-story'), outro: $('#screen-outro')
   };
+
+  let gameReady = false;
+  let placedCount = 0;
+  const totalPetals = CONFIG.petalPhrases.length;
+  let storyIndex = 0;
+  let phraseShown = false;
 
   function go(from, to) {
     if (!from || !to) return;
@@ -36,22 +39,17 @@
     to.classList.add('active');
   }
 
-  function addAmbient() {
-    const ambient = $('#ambient');
-    if (!ambient) return;
-    for (let i = 0; i < 18; i += 1) {
-      const dust = document.createElement('i');
-      dust.className = 'dust';
-      dust.style.left = `${Math.random() * 100}%`;
-      dust.style.animationDelay = `${Math.random() * 8}s`;
-      ambient.appendChild(dust);
-    }
+  function showPhrase(index) {
+    const phrase = $('#game-phrase');
+    if (!phrase || phraseShown) return;
+    phraseShown = true;
+    phrase.textContent = CONFIG.petalPhrases[index];
+    phrase.classList.add('show');
+    window.setTimeout(() => {
+      phrase.classList.remove('show');
+      phraseShown = false;
+    }, 2600);
   }
-
-  let placed = 0;
-  const total = 8;
-  let phraseIndex = 0;
-  let gameReady = false;
 
   function initGame() {
     if (gameReady) return;
@@ -67,7 +65,28 @@
       y: Math.min(150, board.clientHeight * 0.34)
     });
 
-    function paintTargets() {
+    function getTargetPoint(target) {
+      const targetRect = target.getBoundingClientRect();
+      const boardRect = board.getBoundingClientRect();
+      return {
+        x: targetRect.left - boardRect.left + targetRect.width / 2,
+        y: targetRect.top - boardRect.top + targetRect.height / 2
+      };
+    }
+
+    function placePetalAtTarget(petal, target) {
+      const point = getTargetPoint(target);
+      petal.style.position = 'absolute';
+      petal.style.left = `${point.x - petal.offsetWidth / 2}px`;
+      petal.style.top = `${point.y - petal.offsetHeight / 2}px`;
+      petal.style.transform = `rotate(${Number(target.dataset.i) * 45}deg)`;
+      petal.dataset.target = target.dataset.i;
+      petal.classList.remove('dragging');
+      petal.classList.add('placed');
+      target.classList.add('filled');
+    }
+
+    function repaintTargets() {
       const point = center();
       targetBox.innerHTML = '';
       angles.forEach((angle, index) => {
@@ -80,103 +99,112 @@
         target.style.transform = `translate(-50%, -50%) rotate(${angle + 90}deg)`;
         targetBox.appendChild(target);
       });
+
+      petalBox.querySelectorAll('.petal.placed').forEach(petal => {
+        const target = targetBox.querySelector(`.target[data-i="${petal.dataset.target}"]`);
+        if (target) placePetalAtTarget(petal, target);
+      });
     }
 
     function resetPetal(petal) {
       petal.style.position = 'absolute';
-      petal.style.left = `${12 + Math.random() * 74}%`;
+      petal.style.left = `${10 + Math.random() * 78}%`;
       petal.style.top = `${70 + Math.random() * 24}%`;
       petal.style.transform = `rotate(${Math.random() * 36 - 18}deg)`;
+      petal.classList.remove('dragging');
     }
 
-    function drop(petal, x, y) {
+    function dropPetal(petal, clientX, clientY) {
+      const available = [...targetBox.querySelectorAll('.target:not(.filled)')];
       let nearest = null;
-      let distance = Infinity;
-      targetBox.querySelectorAll('.target:not(.filled)').forEach(target => {
+      let nearestDistance = Infinity;
+      available.forEach(target => {
         const rect = target.getBoundingClientRect();
-        const currentDistance = Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2));
-        if (currentDistance < distance) {
-          distance = currentDistance;
+        const distance = Math.hypot(
+          clientX - (rect.left + rect.width / 2),
+          clientY - (rect.top + rect.height / 2)
+        );
+        if (distance < nearestDistance) {
           nearest = target;
+          nearestDistance = distance;
         }
       });
 
-      if (!nearest || distance > 78) {
+      if (!nearest || nearestDistance > 82) {
         resetPetal(petal);
         return;
       }
 
-      const rect = nearest.getBoundingClientRect();
-      petal.style.position = 'fixed';
-      petal.style.left = `${rect.left + (rect.width - petal.offsetWidth) / 2}px`;
-      petal.style.top = `${rect.top + (rect.height - petal.offsetHeight) / 2}px`;
-      petal.style.transform = `rotate(${Number(nearest.dataset.i) * 45}deg)`;
-      petal.classList.add('placed');
-      nearest.classList.add('filled');
-      placed += 1;
-
+      placePetalAtTarget(petal, nearest);
+      placedCount += 1;
       const hint = $('#game-hint');
-      if (hint) hint.textContent = placed === total ? '¡Tu flor quedó completa!' : `Te faltan ${total - placed} pétalos`;
-      showPhrase();
-      if (placed === total) window.setTimeout(() => go(screens.game, screens.completed), 900);
+      if (hint) hint.textContent = placedCount === totalPetals
+        ? '🌻 ¡Lo lograste!'
+        : `Te faltan ${totalPetals - placedCount} pétalos`;
+      showPhrase(Number(petal.dataset.i));
+
+      if (placedCount === totalPetals) {
+        window.setTimeout(() => go(screens.game, screens.completed), 1500);
+      }
     }
 
     function makeDraggable(petal) {
-      let active = false;
+      let dragging = false;
+      let pointerId = null;
+
       petal.addEventListener('pointerdown', event => {
         if (petal.classList.contains('placed')) return;
-        active = true;
-        petal.setPointerCapture(event.pointerId);
+        event.preventDefault();
+        dragging = true;
+        pointerId = event.pointerId;
+        petal.setPointerCapture(pointerId);
         petal.classList.add('dragging');
-        const rect = petal.getBoundingClientRect();
         petal.style.position = 'fixed';
-        petal.style.left = `${rect.left}px`;
-        petal.style.top = `${rect.top}px`;
+        petal.style.left = `${event.clientX - petal.offsetWidth / 2}px`;
+        petal.style.top = `${event.clientY - petal.offsetHeight / 2}px`;
         petal.style.transform = 'rotate(0deg)';
       });
+
       petal.addEventListener('pointermove', event => {
-        if (!active) return;
+        if (!dragging || event.pointerId !== pointerId) return;
+        event.preventDefault();
         petal.style.left = `${event.clientX - petal.offsetWidth / 2}px`;
         petal.style.top = `${event.clientY - petal.offsetHeight / 2}px`;
       });
+
       petal.addEventListener('pointerup', event => {
-        if (!active) return;
-        active = false;
-        petal.classList.remove('dragging');
-        drop(petal, event.clientX, event.clientY);
+        if (!dragging || event.pointerId !== pointerId) return;
+        event.preventDefault();
+        dragging = false;
+        petal.releasePointerCapture(pointerId);
+        dropPetal(petal, event.clientX, event.clientY);
+        pointerId = null;
       });
+
       petal.addEventListener('pointercancel', () => {
-        if (active) resetPetal(petal);
-        active = false;
-        petal.classList.remove('dragging');
+        if (!dragging) return;
+        dragging = false;
+        resetPetal(petal);
+        pointerId = null;
       });
     }
 
-    paintTargets();
-    window.addEventListener('resize', paintTargets);
-    for (let index = 0; index < total; index += 1) {
+    repaintTargets();
+    window.addEventListener('resize', repaintTargets);
+    for (let index = 0; index < totalPetals; index += 1) {
       const petal = document.createElement('button');
       petal.type = 'button';
       petal.className = 'petal';
+      petal.dataset.i = index;
       petal.setAttribute('aria-label', `Pétalo ${index + 1}`);
-      petal.style.left = `${12 + (index % 4) * 24 + Math.random() * 4}%`;
-      petal.style.top = `${72 + Math.floor(index / 4) * 13}%`;
+      petal.style.left = `${10 + (index % 4) * 25 + Math.random() * 3}%`;
+      petal.style.top = `${70 + Math.floor(index / 4) * 14}%`;
       petal.style.transform = `rotate(${[-12, 8, 20, -8, 12, -18, 4, 16][index]}deg)`;
       petalBox.appendChild(petal);
       makeDraggable(petal);
     }
   }
 
-  function showPhrase() {
-    const phrase = $('#game-phrase');
-    if (!phrase) return;
-    phrase.textContent = CONFIG.petalPhrases[phraseIndex % CONFIG.petalPhrases.length];
-    phraseIndex += 1;
-    phrase.classList.add('show');
-    window.setTimeout(() => phrase.classList.remove('show'), 1900);
-  }
-
-  let storyIndex = 0;
   function showStory() {
     const card = $('#story-card');
     if (!card) return;
@@ -185,53 +213,37 @@
       $('#story-text').textContent = CONFIG.storyTimeline[storyIndex];
       $('#story-number').textContent = String(storyIndex + 1).padStart(2, '0');
       $('#story-progress').style.setProperty('--progress', `${((storyIndex + 1) / CONFIG.storyTimeline.length) * 100}%`);
-      $('#btn-next-story').innerHTML = storyIndex === CONFIG.storyTimeline.length - 1 ? 'Ver la sorpresa <span>→</span>' : 'Siguiente <span>→</span>';
+      $('#btn-next-story').innerHTML = storyIndex === CONFIG.storyTimeline.length - 1
+        ? 'Ver la sorpresa <span>→</span>' : 'Siguiente <span>→</span>';
       card.classList.add('visible');
     }, 220);
   }
 
-  function generateField() {
-    const field = $('#field-container');
-    if (!field) return;
-    field.innerHTML = '';
-    for (let i = 0; i < 38; i += 1) {
-      window.setTimeout(() => {
-        const flower = document.createElement('i');
-        flower.className = 'mini-flower';
-        flower.style.left = `${Math.random() * 96}%`;
-        flower.style.top = `${35 + Math.random() * 58}%`;
-        flower.style.transform = `scale(${0.55 + Math.random() * 0.8})`;
-        field.appendChild(flower);
-        requestAnimationFrame(() => flower.classList.add('bloom'));
-      }, i * 55);
-    }
+  function startExperience(event) {
+    if (event) { event.preventDefault(); event.stopPropagation(); }
+    go(screens.intro, screens.game);
+    initGame();
   }
 
-  function playOutro() {
-    window.setTimeout(() => $('#outro-1')?.classList.add('visible'), 500);
-    window.setTimeout(() => { generateField(); $('#outro-2')?.classList.add('visible'); }, 1900);
-    window.setTimeout(() => {
-      $('#outro-3')?.classList.add('visible');
-      $('#outro-4')?.classList.add('visible');
-      $('.spotify-final')?.classList.add('visible');
-    }, 3300);
-  }
+  window.startFlowerExperience = startExperience;
+  window.addEventListener('flower-experience-start', initGame);
 
-  function bindEvents() {
-    const start = $('#btn-start');
-    if (start) start.addEventListener('click', event => {
-      event.preventDefault();
-      go(screens.intro, screens.game);
-      initGame();
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    $('#btn-start')?.addEventListener('click', startExperience);
     $('#btn-story')?.addEventListener('click', () => { go(screens.completed, screens.story); showStory(); });
     $('#btn-next-story')?.addEventListener('click', () => {
       storyIndex += 1;
-      if (storyIndex >= CONFIG.storyTimeline.length) { go(screens.story, screens.outro); playOutro(); }
+      if (storyIndex >= CONFIG.storyTimeline.length) go(screens.story, screens.outro);
       else showStory();
     });
-  }
-
-  addAmbient();
-  bindEvents();
+    if ($('#ambient')) {
+      for (let i = 0; i < 18; i += 1) {
+        const dust = document.createElement('i');
+        dust.className = 'dust';
+        dust.style.left = `${Math.random() * 100}%`;
+        dust.style.animationDelay = `${Math.random() * 8}s`;
+        $('#ambient').appendChild(dust);
+      }
+    }
+  });
 })();
