@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <a class="music-btn" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener" aria-label="Abrir la canción en Spotify"><span>♪</span><small>Escuchar</small></a>
@@ -21,7 +21,7 @@
         <p>No pude entregártelo en persona, así que hice una versión que puedes armar tú.</p>
         <p class="soft">Y mientras la armas, puedes escuchar nuestra canción.</p>
         <div class="intro-actions">
-          <button type="button" class="btn" id="btn-start">Comenzar <span>→</span></button>
+          <button type="button" class="btn" id="btn-start" onclick="window.startFlowerExperience && window.startFlowerExperience(event)">Comenzar <span>→</span></button>
           <a class="song-link" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">Abrir en Spotify ↗</a>
         </div>
       </div>
@@ -48,13 +48,18 @@
     </section>
 
     <section class="screen outro" id="screen-outro">
-      <div class="field-container" id="field-container"></div><div class="outro-content">
-        <div class="single-flower flower-art"><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-        <p class="outro-line" id="outro-1">Una flor era apenas el comienzo.</p><p class="outro-line" id="outro-2">Así que hice un jardín entero.</p><h2 id="outro-3">Feliz día de las flores amarillas,<br><em>Poncho.</em></h2><p class="love" id="outro-4">Te quiero mucho. Gracias por hacer mis días más bonitos. <b>✦</b></p>
-        <a class="spotify-final" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">♪ Escuchar la canción en Spotify ↗</a>
-      </div>
+      <div class="field-container" id="field-container"></div><div class="outro-content"><div class="single-flower flower-art"><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div><p class="outro-line" id="outro-1">Una flor era apenas el comienzo.</p><p class="outro-line" id="outro-2">Así que hice un jardín entero.</p><h2 id="outro-3">Feliz día de las flores amarillas,<br><em>Poncho.</em></h2><p class="love" id="outro-4">Te quiero mucho. Gracias por hacer mis días más bonitos. <b>✦</b></p><a class="spotify-final" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">♪ Escuchar la canción en Spotify ↗</a></div>
     </section>
   </main>
-  <script src="script.js?v=4" defer></script>
+  <script>
+    window.startFlowerExperience = function(event) {
+      if (event) { event.preventDefault(); event.stopPropagation(); }
+      var intro = document.getElementById('screen-intro');
+      var game = document.getElementById('screen-game');
+      if (intro && game) { intro.classList.remove('active'); game.classList.add('active'); }
+      window.dispatchEvent(new CustomEvent('flower-experience-start'));
+    };
+  </script>
+  <script src="script.js?v=5" defer></script>
 </body>
 </html>
