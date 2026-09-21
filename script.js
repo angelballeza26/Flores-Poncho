@@ -1,245 +1,29 @@
-/* =========================================================
-   🌻 CONFIGURACIÓN PERSONAL (EDITA ESTO) 🌻
-   ========================================================= */
-const CONFIG = {
-    // Frases que aparecen cada que coloca un pétalo correctamente
-    petalPhrases: [
-        "Porque me haces sonreír.",
-        "Porque me gusta conocerte.",
-        "Porque contigo todo se siente diferente.",
-        "Porque quería hacerte algo solamente a ti.",
-        "Porque haces que mis días sean mejores.",
-        "Porque eres alguien muy especial."
-    ],
-    
-    // Tu historia (cada elemento es una "tarjeta" que deberá leer y avanzar)
-    storyTimeline: [
-        "Antes de conocerte...",
-        "No sabía que iba a terminar haciendo esto a estas horas JAJA.",
-        "Después apareciste tú...",
-        "Y de repente las conversaciones se volvieron mi parte favorita del día.",
-        "Quería darte un detalle diferente, algo hecho a mano (o a código).",
-        "Porque te mereces cosas bonitas."
-    ]
+/* =====================================================
+   PERSONALIZA AQUÍ: cambia frases y recuerdos sin tocar el resto.
+   ===================================================== */
+const CONFIG={
+  petalPhrases:['Porque me haces sonreír.','Porque me encanta conocerte.','Porque contigo todo se siente diferente.','Porque quería hacerte algo solamente a ti.','Porque hasta los días normales se sienten bonitos contigo.','Porque te quiero, Poncho.'],
+  storyTimeline:['Antes de conocerte…','No sabía que iba a terminar haciendo esto a estas horas JAJA.','Después apareciste tú…','Y sin darme cuenta, nuestras conversaciones se volvieron de mis partes favoritas del día.','Quería darte un detalle que se sintiera nuestro: sencillo, amarillo y hecho con mucho cariño.','Gracias por existir tan bonito en mi vida, Poncho.']
 };
-/* ========================================================= */
-
-// Referencias de UI
-const screens = {
-    intro: document.getElementById('screen-intro'),
-    game: document.getElementById('screen-game'),
-    completed: document.getElementById('screen-completed'),
-    story: document.getElementById('screen-story'),
-    outro: document.getElementById('screen-outro')
-};
-
-// --- AUDIO LÓGICA ---
-const bgMusic = document.getElementById('bg-music');
-const musicBtn = document.getElementById('music-btn');
-let isPlaying = false;
-
-musicBtn.addEventListener('click', () => {
-    if (isPlaying) {
-        bgMusic.pause();
-        musicBtn.classList.remove('playing');
-        musicBtn.style.opacity = '0.5';
-    } else {
-        bgMusic.play();
-        musicBtn.classList.add('playing');
-        musicBtn.style.opacity = '1';
-    }
-    isPlaying = !isPlaying;
-});
-
-// --- PANTALLA INTRO ---
-setTimeout(() => document.getElementById('intro-text-1').classList.add('show-text'), 500);
-setTimeout(() => document.getElementById('intro-text-2').classList.add('show-text'), 2000);
-setTimeout(() => document.getElementById('intro-text-3').classList.add('show-text'), 4000);
-setTimeout(() => document.getElementById('btn-start').classList.add('show-text'), 6000);
-
-function switchScreen(from, to) {
-    from.classList.remove('active');
-    setTimeout(() => to.classList.add('active'), 1000);
+const $=s=>document.querySelector(s);const screens={intro:$('#screen-intro'),game:$('#screen-game'),completed:$('#screen-completed'),story:$('#screen-story'),outro:$('#screen-outro')};
+const music=$('#bg-music'),musicBtn=$('#music-btn');let playing=false;
+// Los navegadores necesitan una acción del usuario para iniciar audio. Este botón también abre el audio local.
+musicBtn.addEventListener('click',async()=>{try{if(playing){music.pause();playing=false;musicBtn.classList.remove('playing')}else{await music.play();playing=true;musicBtn.classList.add('playing')}}catch(e){alert('Añade tu archivo canción.mp3 en la carpeta del proyecto para activar la música.')}});
+for(let i=0;i<22;i++){const d=document.createElement('i');d.className='dust';d.style.left=Math.random()*100+'%';d.style.animationDelay=Math.random()*9+'s';d.style.animationDuration=7+Math.random()*8+'s';$('#ambient').append(d)}
+function go(from,to){from.classList.remove('active');setTimeout(()=>to.classList.add('active'),120)}
+$('#btn-start').addEventListener('click',()=>{go(screens.intro,screens.game);initGame()});
+let placed=0,total=6,petals=[],targets=[],phraseIndex=0,gameReady=false;
+function initGame(){if(gameReady)return;gameReady=true;const board=$('#game-board'),targetBox=$('#targets'),petalBox=$('#petals-container');
+  const center=()=>({x:board.clientWidth/2,y:Math.min(145,board.clientHeight*.32)});const angles=[-90,-30,30,90,150,210];
+  function paintTargets(){const c=center();targetBox.innerHTML='';targets=[];angles.forEach((a,i)=>{const rad=a*Math.PI/180,r=71,t=document.createElement('div');t.className='target';t.dataset.i=i;t.style.left=c.x+Math.cos(rad)*r+'px';t.style.top=c.y+Math.sin(rad)*r+'px';t.style.transform=`rotate(${a+90}deg)`;targetBox.append(t);targets.push(t)})}
+  paintTargets();window.addEventListener('resize',paintTargets);
+  for(let i=0;i<total;i++){const p=document.createElement('button');p.className='petal';p.setAttribute('aria-label','Pétalo '+(i+1));p.dataset.i=i;const col=i%3,row=Math.floor(i/3);p.style.left=(18+col*32+Math.random()*7)+'%';p.style.top=(68+row*16)+'%';p.style.transform=`rotate(${[-16,8,20,-12,5,17][i]}deg)`;petalBox.append(p);petals.push(p);drag(p)}
+  function drag(p){let active=false,start={x:0,y:0},origin={x:0,y:0};p.addEventListener('pointerdown',e=>{if(p.classList.contains('placed'))return;active=true;p.setPointerCapture(e.pointerId);p.classList.add('dragging');const r=p.getBoundingClientRect();start={x:e.clientX,y:e.clientY};origin={x:r.left+ r.width/2,y:r.top+r.height/2};p.style.position='fixed';p.style.left=origin.x-r.width/2+'px';p.style.top=origin.y-r.height/2+'px';p.style.transform='rotate(0) scale(1.08)'});p.addEventListener('pointermove',e=>{if(!active)return;p.style.left=origin.x+(e.clientX-start.x)-p.offsetWidth/2+'px';p.style.top=origin.y+(e.clientY-start.y)-p.offsetHeight/2+'px'});p.addEventListener('pointerup',e=>{if(!active)return;active=false;p.classList.remove('dragging');p.releasePointerCapture(e.pointerId);drop(p,e.clientX,e.clientY)})}
+  function drop(p,x,y){const boardRect=board.getBoundingClientRect();let best=null,bestDist=Infinity;targets.forEach(t=>{if(t.classList.contains('filled'))return;const r=t.getBoundingClientRect(),d=Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2));if(d<bestDist){bestDist=d;best=t}});if(best&&bestDist<92){const r=best.getBoundingClientRect();p.style.position='fixed';p.style.left=r.left+(r.width-p.offsetWidth)/2+'px';p.style.top=r.top+(r.height-p.offsetHeight)/2+'px';p.style.transform=`rotate(${best.style.transform.match(/-?\d+/)?.[0]||0}deg)`;p.classList.add('placed');best.classList.add('filled');placed++;$('#game-hint').textContent=placed===total?'La flor está completa.':'Te faltan '+(total-placed)+' pétalos';showPhrase();if(placed===total)setTimeout(complete,1100)}else{p.style.position='absolute';p.style.left=(12+Math.random()*75)+'%';p.style.top=(69+Math.random()*22)+'%';p.style.transform='rotate('+(Math.random()*36-18)+'deg)'}}
 }
-
-document.getElementById('btn-start').addEventListener('click', () => {
-    switchScreen(screens.intro, screens.game);
-    initGame();
-});
-
-// --- JUEGO DE PÉTALOS ---
-let placedPetals = 0;
-const totalPetals = 6;
-
-function initGame() {
-    const container = document.getElementById('petals-container');
-    const phrases = [...CONFIG.petalPhrases];
-    
-    for (let i = 0; i < totalPetals; i++) {
-        const petal = document.createElement('div');
-        petal.classList.add('petal');
-        // Posición inicial aleatoria en la parte inferior
-        petal.style.left = `${Math.random() * 80 + 10}%`;
-        petal.style.bottom = `${Math.random() * 20}%`;
-        petal.dataset.index = i;
-        
-        setupDrag(petal, phrases);
-        container.appendChild(petal);
-    }
-}
-
-function setupDrag(petal, phrases) {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-
-    petal.addEventListener('pointerdown', (e) => {
-        if (petal.classList.contains('placed')) return;
-        isDragging = true;
-        petal.classList.add('dragging');
-        petal.setPointerCapture(e.pointerId);
-        
-        const rect = petal.getBoundingClientRect();
-        startX = e.clientX;
-        startY = e.clientY;
-        initialX = rect.left;
-        initialY = rect.top;
-        
-        petal.style.position = 'fixed';
-        petal.style.left = initialX + 'px';
-        petal.style.top = initialY + 'px';
-        petal.style.bottom = 'auto';
-    });
-
-    petal.addEventListener('pointermove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        petal.style.left = (initialX + dx) + 'px';
-        petal.style.top = (initialY + dy) + 'px';
-    });
-
-    petal.addEventListener('pointerup', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        petal.classList.remove('dragging');
-        petal.releasePointerCapture(e.pointerId);
-        checkDrop(petal, e.clientX, e.clientY, phrases);
-    });
-}
-
-function checkDrop(petal, x, y, phrases) {
-    const zones = document.querySelectorAll('.drop-zone:not(.filled)');
-    let placed = false;
-
-    zones.forEach(zone => {
-        if (placed) return;
-        const rect = zone.getBoundingClientRect();
-        // Área de tolerancia para soltar el pétalo
-        if (x > rect.left - 30 && x < rect.right + 30 && 
-            y > rect.top - 30 && y < rect.bottom + 30) {
-            
-            zone.classList.add('filled');
-            petal.classList.add('placed');
-            
-            // Ajustar el pétalo exactamente en la zona
-            petal.style.position = 'absolute';
-            petal.style.left = '50%';
-            petal.style.top = '50%';
-            petal.style.transform = `translate(-50%, -50%) ${zone.style.transform}`;
-            zone.appendChild(petal);
-            placed = true;
-            placedPetals++;
-
-            // Mostrar frase
-            const phraseEl = document.getElementById('game-phrase');
-            const randomPhrase = phrases.splice(Math.floor(Math.random() * phrases.length), 1)[0];
-            phraseEl.innerText = randomPhrase || "";
-            phraseEl.style.opacity = 1;
-            setTimeout(() => phraseEl.style.opacity = 0, 2500);
-
-            if (placedPetals === totalPetals) {
-                setTimeout(() => {
-                    const finalFlower = document.querySelector('.flower-container').cloneNode(true);
-                    document.querySelector('.completed-flower-wrapper').appendChild(finalFlower);
-                    switchScreen(screens.game, screens.completed);
-                }, 1500);
-            }
-        }
-    });
-
-    if (!placed) {
-        // Volver abajo si falla
-        petal.style.position = 'absolute';
-        petal.style.top = 'auto';
-        petal.style.bottom = `${Math.random() * 20}%`;
-        petal.style.left = `${Math.random() * 80 + 10}%`;
-    }
-}
-
-// --- PANTALLA HISTORIA ---
-let storyIndex = 0;
-document.getElementById('btn-story').addEventListener('click', () => {
-    switchScreen(screens.completed, screens.story);
-    showStoryCard();
-});
-
-document.getElementById('btn-next-story').addEventListener('click', () => {
-    storyIndex++;
-    if (storyIndex < CONFIG.storyTimeline.length) {
-        showStoryCard();
-    } else {
-        switchScreen(screens.story, screens.outro);
-        playOutro();
-    }
-});
-
-function showStoryCard() {
-    const card = document.getElementById('story-card');
-    card.classList.remove('visible');
-    setTimeout(() => {
-        document.getElementById('story-text').innerText = CONFIG.storyTimeline[storyIndex];
-        card.classList.add('visible');
-    }, 500);
-}
-
-// --- PANTALLA OUTRO (CAMPO DE FLORES) ---
-function playOutro() {
-    setTimeout(() => document.getElementById('outro-text-1').classList.add('show-text'), 1000);
-    setTimeout(() => document.getElementById('outro-text-1').classList.remove('show-text'), 4000);
-    
-    setTimeout(() => {
-        generateField();
-        document.getElementById('outro-text-2').classList.add('show-text');
-    }, 5000);
-
-    setTimeout(() => {
-        document.getElementById('outro-text-3').classList.add('show-text');
-        document.getElementById('outro-text-4').classList.add('show-text');
-    }, 7000);
-}
-
-function generateField() {
-    const field = document.getElementById('field-container');
-    // Generar 30 florecitas de fondo
-    for(let i=0; i<30; i++) {
-        setTimeout(() => {
-            const flower = document.createElement('div');
-            flower.className = 'mini-flower';
-            // Dibujar una florecita sencilla con CSS
-            flower.style.background = 'radial-gradient(circle, #5C4033 20%, #F4D03F 25%)';
-            flower.style.borderRadius = '50%';
-            flower.style.left = Math.random() * 100 + 'vw';
-            flower.style.top = Math.random() * 100 + 'vh';
-            
-            // Añadir pétalos falsos con box-shadow
-            flower.style.boxShadow = '0 -10px 0 -2px #F4D03F, 0 10px 0 -2px #F4D03F, -10px 0 0 -2px #F4D03F, 10px 0 0 -2px #F4D03F, -7px -7px 0 -2px #F4D03F, 7px -7px 0 -2px #F4D03F, -7px 7px 0 -2px #F4D03F, 7px 7px 0 -2px #F4D03F';
-
-            field.appendChild(flower);
-            
-            // Trigger animation
-            requestAnimationFrame(() => {
-                flower.classList.add('bloom');
-            });
-        }, i * 150); // Aparecen una por una
-    }
-}
+function showPhrase(){const el=$('#game-phrase');el.textContent=CONFIG.petalPhrases[phraseIndex++%CONFIG.petalPhrases.length];el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+function complete(){for(let i=0;i<22;i++){const d=document.createElement('i');d.className='dust';d.style.left=45+Math.random()*10+'%';d.style.animationDelay=i*35+'ms';d.style.animationDuration='2s';$('#game-board').append(d)}go(screens.game,screens.completed)}
+let storyIndex=0;$('#btn-story').addEventListener('click',()=>{go(screens.completed,screens.story);showStory()});$('#btn-next-story').addEventListener('click',()=>{storyIndex++;if(storyIndex>=CONFIG.storyTimeline.length){go(screens.story,screens.outro);playOutro()}else showStory()});
+function showStory(){const card=$('#story-card');card.classList.remove('visible');setTimeout(()=>{$('#story-text').textContent=CONFIG.storyTimeline[storyIndex];$('#story-number').textContent=String(storyIndex+1).padStart(2,'0');$('.story-progress').style.setProperty('--progress',((storyIndex+1)/CONFIG.storyTimeline.length*100)+'%');$('#btn-next-story').innerHTML=storyIndex===CONFIG.storyTimeline.length-1?'Ver la sorpresa <span>→</span>':'Siguiente <span>→</span>';card.classList.add('visible')},300)}
+function playOutro(){setTimeout(()=>$('#outro-1').classList.add('visible'),700);setTimeout(()=>{generateField();$('#outro-2').classList.add('visible')},2800);setTimeout(()=>{$('#outro-3').classList.add('visible');$('#outro-4').classList.add('visible');$('.music-links').classList.add('visible')},4800)}
+function generateField(){const field=$('#field-container');for(let i=0;i<42;i++)setTimeout(()=>{const f=document.createElement('i');f.className='mini-flower';f.style.left=Math.random()*96+'%';f.style.top=38+Math.random()*58+'%';f.style.transform=`scale(${.55+Math.random()*.9})`;field.append(f);requestAnimationFrame(()=>f.classList.add('bloom'))},i*65)}

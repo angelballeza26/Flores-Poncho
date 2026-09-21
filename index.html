@@ -1,84 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Para Poncho 🌻</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101414">
+  <title>Flores para Poncho</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Audio element (Reemplaza 'tu-cancion.mp3' con tu archivo real) -->
-    <audio id="bg-music" loop>
-        <source src="tu-cancion.mp3" type="audio/mpeg">
-    </audio>
-    <button id="music-btn" class="music-btn">🎵</button>
+  <audio id="bg-music" loop preload="none"><source src="cancion.mp3" type="audio/mpeg"></audio>
+  <button class="music-btn" id="music-btn" aria-label="Activar música"><span>♪</span><small>Música</small></button>
+  <div class="ambient" id="ambient" aria-hidden="true"></div>
 
-    <!-- PANTALLA 1: Inicio -->
-    <section id="screen-intro" class="screen active">
-        <div class="content fade-in-text">
-            <h1 id="intro-text-1">Te quería regalar flores amarillas...</h1>
-            <h2 id="intro-text-2" class="delay-1 hidden-text">pero hay un pequeño problema.</h2>
-            <p id="intro-text-3" class="delay-2 hidden-text">No puedo entregártelas en persona, así que tendrás que armarlas tú. 🌻</p>
-            <button id="btn-start" class="btn delay-3 hidden-text">Empezar</button>
-        </div>
-        <div id="particles-intro" class="particles"></div>
+  <main>
+    <section class="screen active" id="screen-intro">
+      <div class="eyebrow">un pequeño detalle para ti</div>
+      <div class="intro-copy">
+        <h1>Te quería regalar<br><em>flores amarillas…</em></h1>
+        <p>pero hay un pequeño problema.</p>
+        <p class="soft">No puedo entregártelas en persona,<br>así que tendrás que armarlas tú.</p>
+        <button class="btn" id="btn-start">Empezar <span>→</span></button>
+      </div>
+      <div class="intro-sun" aria-hidden="true"></div>
     </section>
 
-    <!-- PANTALLA 2: Juego de Pétalos -->
-    <section id="screen-game" class="screen">
-        <p id="game-phrase" class="floating-phrase"></p>
-        <div class="flower-container">
-            <div class="stem"></div>
-            <div class="flower-center"></div>
-            <!-- Zonas donde deben soltarse los pétalos -->
-            <div class="drop-zone" data-index="0" style="transform: rotate(0deg) translate(0, -60px);"></div>
-            <div class="drop-zone" data-index="1" style="transform: rotate(60deg) translate(0, -60px);"></div>
-            <div class="drop-zone" data-index="2" style="transform: rotate(120deg) translate(0, -60px);"></div>
-            <div class="drop-zone" data-index="3" style="transform: rotate(180deg) translate(0, -60px);"></div>
-            <div class="drop-zone" data-index="4" style="transform: rotate(240deg) translate(0, -60px);"></div>
-            <div class="drop-zone" data-index="5" style="transform: rotate(300deg) translate(0, -60px);"></div>
+    <section class="screen" id="screen-game">
+      <div class="game-heading"><div class="eyebrow">hazlo con calma</div><h2>Arma una flor para Poncho</h2><p>Arrastra cada pétalo hasta uno de los círculos dorados.</p></div>
+      <div class="game-board" id="game-board">
+        <div class="garden-floor"></div>
+        <div class="flower-art main-flower" id="main-flower">
+          <div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div>
+          <div class="flower-head"><div class="target-ring"></div><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         </div>
-        <div id="petals-container" class="petals-container">
-            <!-- Pétalos generados por JS -->
-        </div>
+        <div class="targets" id="targets" aria-hidden="true"></div>
+        <div class="petals-container" id="petals-container"></div>
+      </div>
+      <p class="game-hint" id="game-hint">Te faltan 6 pétalos</p>
+      <div class="floating-phrase" id="game-phrase"></div>
     </section>
 
-    <!-- PANTALLA 3: Flor Completa -->
-    <section id="screen-completed" class="screen">
-        <div class="content">
-            <div class="completed-flower-wrapper">
-                <!-- Se clona la flor armada aquí visualmente -->
-            </div>
-            <h1 class="fade-in">Listo. Ya tienes tus flores amarillas. 🌻</h1>
-            <p class="fade-in delay-1">Aunque siendo sincero… hubiera preferido dártelas en persona.</p>
-            <button id="btn-story" class="btn fade-in delay-2">Hay algo más…</button>
-        </div>
+    <section class="screen" id="screen-completed">
+      <div class="completed-flower flower-art"><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="eyebrow">hecho con cariño</div><h2>Listo. Ya tienes<br>tus flores amarillas.</h2><p>Aunque siendo sincero…<br>hubiera preferido dártelas en persona.</p>
+      <button class="btn" id="btn-story">Hay algo más <span>→</span></button>
     </section>
 
-    <!-- PANTALLA 4: Mini Historia -->
-    <section id="screen-story" class="screen">
-        <div class="story-container">
-            <div id="story-card" class="story-card">
-                <p id="story-text"></p>
-            </div>
-            <button id="btn-next-story" class="btn ghost-btn">Siguiente</button>
-        </div>
+    <section class="screen" id="screen-story">
+      <div class="story-progress" id="story-progress"></div><div class="eyebrow">nuestra pequeña historia</div>
+      <div class="story-card" id="story-card"><span class="story-number" id="story-number">01</span><p id="story-text"></p></div>
+      <button class="btn ghost-btn" id="btn-next-story">Siguiente <span>→</span></button>
     </section>
 
-    <!-- PANTALLA 5: Sorpresa Final -->
-    <section id="screen-outro" class="screen">
-        <div id="field-container" class="field-container"></div>
-        <div class="outro-text-container">
-            <h1 id="outro-text-1" class="hidden-text">Una no era suficiente.</h1>
-            <h1 id="outro-text-2" class="hidden-text">Así que hice muchas. 🌻</h1>
-            <h2 id="outro-text-3" class="hidden-text highlight">Feliz día de las flores amarillas, Poncho.</h2>
-            <p id="outro-text-4" class="hidden-text">Espero poder darte unas de verdad algún día. ❤️</p>
-        </div>
+    <section class="screen outro" id="screen-outro">
+      <div class="field-container" id="field-container"></div>
+      <div class="outro-content"><div class="single-flower flower-art"><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <p class="outro-line" id="outro-1">Una no era suficiente.</p><p class="outro-line" id="outro-2">Así que hice muchas.</p><h2 id="outro-3">Feliz día de las flores amarillas,<br><em>Poncho.</em></h2><p class="love" id="outro-4">Te quiero mucho. Espero poder darte unas<br>de verdad algún día. <b>♥</b></p>
+        <div class="music-links"><a href="https://youtu.be/gv63CGCx6vg?si=a88udHxL8LyK-LDl" target="_blank" rel="noopener">Escuchar en YouTube ↗</a><a href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe" target="_blank" rel="noopener">Escuchar en Spotify ↗</a></div>
+      </div>
     </section>
-
-    <script src="script.js"></script>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
