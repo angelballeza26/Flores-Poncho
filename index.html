@@ -3,62 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#101414">
+  <meta name="theme-color" content="#fff7df">
   <title>Flores para Poncho</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <audio id="bg-music" loop preload="none"><source src="cancion.mp3" type="audio/mpeg"></audio>
-  <button class="music-btn" id="music-btn" aria-label="Activar música"><span>♪</span><small>Música</small></button>
-  <div class="ambient" id="ambient" aria-hidden="true"></div>
-
+  <a class="music-btn" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener" aria-label="Abrir la canción en Spotify"><span>♪</span><small>Escuchar</small></a>
+  <div class="ambient" aria-hidden="true"></div>
   <main>
     <section class="screen active" id="screen-intro">
-      <div class="eyebrow">un pequeño detalle para ti</div>
+      <div class="eyebrow">un detalle hecho para ti</div>
       <div class="intro-copy">
-        <h1>Te quería regalar<br><em>flores amarillas…</em></h1>
-        <p>pero hay un pequeño problema.</p>
-        <p class="soft">No puedo entregártelas en persona,<br>así que tendrás que armarlas tú.</p>
-        <button class="btn" id="btn-start">Empezar <span>→</span></button>
+        <h1>Te preparé algo<br><em>bonito y amarillo.</em></h1>
+        <p>No pude entregártelo en persona, así que hice una versión que puedes armar tú.</p>
+        <p class="soft">Y mientras la armas, puedes escuchar nuestra canción.</p>
+        <div class="intro-actions"><button class="btn" id="btn-start">Comenzar <span>→</span></button><a class="song-link" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">Abrir en Spotify ↗</a></div>
       </div>
       <div class="intro-sun" aria-hidden="true"></div>
     </section>
 
     <section class="screen" id="screen-game">
-      <div class="game-heading"><div class="eyebrow">hazlo con calma</div><h2>Arma una flor para Poncho</h2><p>Arrastra cada pétalo hasta uno de los círculos dorados.</p></div>
+      <div class="game-heading"><div class="eyebrow">un pétalo a la vez</div><h2>Arma tu flor amarilla</h2><p>Arrastra los ocho pétalos hasta los espacios dorados.</p></div>
       <div class="game-board" id="game-board">
         <div class="garden-floor"></div>
-        <div class="flower-art main-flower" id="main-flower">
-          <div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div>
-          <div class="flower-head"><div class="target-ring"></div><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        </div>
-        <div class="targets" id="targets" aria-hidden="true"></div>
-        <div class="petals-container" id="petals-container"></div>
+        <div class="flower-art main-flower" id="main-flower"><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div><div class="flower-head"><div class="target-ring"></div><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <div class="targets" id="targets" aria-hidden="true"></div><div class="petals-container" id="petals-container"></div>
       </div>
-      <p class="game-hint" id="game-hint">Te faltan 6 pétalos</p>
-      <div class="floating-phrase" id="game-phrase"></div>
+      <p class="game-hint" id="game-hint">Te faltan 8 pétalos</p><div class="floating-phrase" id="game-phrase"></div>
     </section>
 
     <section class="screen" id="screen-completed">
-      <div class="completed-flower flower-art"><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-      <div class="eyebrow">hecho con cariño</div><h2>Listo. Ya tienes<br>tus flores amarillas.</h2><p>Aunque siendo sincero…<br>hubiera preferido dártelas en persona.</p>
-      <button class="btn" id="btn-story">Hay algo más <span>→</span></button>
+      <div class="completed-flower flower-art"><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="eyebrow">quedó completa</div><h2>Una flor para ti,<br><em>con todo mi cariño.</em></h2><p>Ahora sí: amarilla, completa y hecha especialmente para Poncho.</p><button class="btn" id="btn-story">Hay algo más <span>→</span></button>
     </section>
 
     <section class="screen" id="screen-story">
-      <div class="story-progress" id="story-progress"></div><div class="eyebrow">nuestra pequeña historia</div>
-      <div class="story-card" id="story-card"><span class="story-number" id="story-number">01</span><p id="story-text"></p></div>
-      <button class="btn ghost-btn" id="btn-next-story">Siguiente <span>→</span></button>
+      <div class="story-progress" id="story-progress"></div><div class="eyebrow">unas palabras para ti</div><div class="story-card" id="story-card"><span class="story-number" id="story-number">01</span><p id="story-text"></p></div><button class="btn ghost-btn" id="btn-next-story">Siguiente <span>→</span></button>
     </section>
 
     <section class="screen outro" id="screen-outro">
-      <div class="field-container" id="field-container"></div>
-      <div class="outro-content"><div class="single-flower flower-art"><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-        <p class="outro-line" id="outro-1">Una no era suficiente.</p><p class="outro-line" id="outro-2">Así que hice muchas.</p><h2 id="outro-3">Feliz día de las flores amarillas,<br><em>Poncho.</em></h2><p class="love" id="outro-4">Te quiero mucho. Espero poder darte unas<br>de verdad algún día. <b>♥</b></p>
-        <div class="music-links"><a href="https://youtu.be/gv63CGCx6vg?si=a88udHxL8LyK-LDl" target="_blank" rel="noopener">Escuchar en YouTube ↗</a><a href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe" target="_blank" rel="noopener">Escuchar en Spotify ↗</a></div>
+      <div class="field-container" id="field-container"></div><div class="outro-content">
+        <div class="single-flower flower-art"><div class="stem"></div><div class="flower-head"><div class="flower-center"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <p class="outro-line" id="outro-1">Una flor era apenas el comienzo.</p><p class="outro-line" id="outro-2">Así que hice un jardín entero.</p><h2 id="outro-3">Feliz día de las flores amarillas,<br><em>Poncho.</em></h2><p class="love" id="outro-4">Te quiero mucho. Gracias por hacer mis días más bonitos. <b>✦</b></p>
+        <a class="spotify-final" href="https://open.spotify.com/intl-es/track/5wBBoVjoounI5e36oI8oZe?si=33eb242d8faa4e9e" target="_blank" rel="noopener">♪ Escuchar la canción en Spotify ↗</a>
       </div>
     </section>
   </main>
