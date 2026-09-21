@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Poncho 🌻</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Audio element (Reemplaza 'tu-cancion.mp3' con tu archivo real) -->
+    <audio id="bg-music" loop>
+        <source src="tu-cancion.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-btn" class="music-btn">🎵</button>
+
+    <!-- PANTALLA 1: Inicio -->
+    <section id="screen-intro" class="screen active">
+        <div class="content fade-in-text">
+            <h1 id="intro-text-1">Te quería regalar flores amarillas...</h1>
+            <h2 id="intro-text-2" class="delay-1 hidden-text">pero hay un pequeño problema.</h2>
+            <p id="intro-text-3" class="delay-2 hidden-text">No puedo entregártelas en persona, así que tendrás que armarlas tú. 🌻</p>
+            <button id="btn-start" class="btn delay-3 hidden-text">Empezar</button>
+        </div>
+        <div id="particles-intro" class="particles"></div>
+    </section>
+
+    <!-- PANTALLA 2: Juego de Pétalos -->
+    <section id="screen-game" class="screen">
+        <p id="game-phrase" class="floating-phrase"></p>
+        <div class="flower-container">
+            <div class="stem"></div>
+            <div class="flower-center"></div>
+            <!-- Zonas donde deben soltarse los pétalos -->
+            <div class="drop-zone" data-index="0" style="transform: rotate(0deg) translate(0, -60px);"></div>
+            <div class="drop-zone" data-index="1" style="transform: rotate(60deg) translate(0, -60px);"></div>
+            <div class="drop-zone" data-index="2" style="transform: rotate(120deg) translate(0, -60px);"></div>
+            <div class="drop-zone" data-index="3" style="transform: rotate(180deg) translate(0, -60px);"></div>
+            <div class="drop-zone" data-index="4" style="transform: rotate(240deg) translate(0, -60px);"></div>
+            <div class="drop-zone" data-index="5" style="transform: rotate(300deg) translate(0, -60px);"></div>
+        </div>
+        <div id="petals-container" class="petals-container">
+            <!-- Pétalos generados por JS -->
+        </div>
+    </section>
+
+    <!-- PANTALLA 3: Flor Completa -->
+    <section id="screen-completed" class="screen">
+        <div class="content">
+            <div class="completed-flower-wrapper">
+                <!-- Se clona la flor armada aquí visualmente -->
+            </div>
+            <h1 class="fade-in">Listo. Ya tienes tus flores amarillas. 🌻</h1>
+            <p class="fade-in delay-1">Aunque siendo sincero… hubiera preferido dártelas en persona.</p>
+            <button id="btn-story" class="btn fade-in delay-2">Hay algo más…</button>
+        </div>
+    </section>
+
+    <!-- PANTALLA 4: Mini Historia -->
+    <section id="screen-story" class="screen">
+        <div class="story-container">
+            <div id="story-card" class="story-card">
+                <p id="story-text"></p>
+            </div>
+            <button id="btn-next-story" class="btn ghost-btn">Siguiente</button>
+        </div>
+    </section>
+
+    <!-- PANTALLA 5: Sorpresa Final -->
+    <section id="screen-outro" class="screen">
+        <div id="field-container" class="field-container"></div>
+        <div class="outro-text-container">
+            <h1 id="outro-text-1" class="hidden-text">Una no era suficiente.</h1>
+            <h1 id="outro-text-2" class="hidden-text">Así que hice muchas. 🌻</h1>
+            <h2 id="outro-text-3" class="hidden-text highlight">Feliz día de las flores amarillas, Poncho.</h2>
+            <p id="outro-text-4" class="hidden-text">Espero poder darte unas de verdad algún día. ❤️</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
